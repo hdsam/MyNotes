@@ -7,3 +7,7 @@ JVM的结构主要有4部分组成
 * 执行引擎，负责执行class文件中包含的字节码指令，相当于实体机上的CPU。
 * 内存区，将内存化分成若干个区以模拟实际机器上的存储、记录和调度功能模块。
 * 本地方法调用，调用C或者C++实现的本地方法的代码返回结果。
+
+
+
+![JVM体系结构图](https://raw.githubusercontent.com/hdsam/MyImages/master/MyNotes/20200918160815.jpg)
