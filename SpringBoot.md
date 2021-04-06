@@ -1,22 +1,23 @@
 # SpringBoot教程
 
+[TOC]
+
 
 
 ## 补充内容：Bean的生命周期
 
 - Spring容器创建时：
 
-1. 执行bean的构造方法。
+1. 实例化
+2. 初始化属性。
+3. 若实现了`BeanNameAware`接口，则执行其`setBeanName()`方法，设置bean工厂创建这个bean的名字。
+4. 若使用了``@PostConstruct``注解标注了某个方法，则会执行这个方法。
+5. 若实现了`InitializingBean`接口，则会执行这个接口的`afterPropertiesSet()`方法。
+6. 
+7. 若使用了`@preDestory`注解标注了某个方法，则会执行这个方法。
+8. 若实现了`DisposableBean`j接口，则会执行这个接口的`destroy()`方法。
 
-2. 若使用了``@PostConstruct``注解标注了某个方法，则会执行这个方法。
 
-3. 若实现了`InitializingBean`接口，则会执行这个接口的`afterPropertiesSet()`方法。
-
-- Spring容器销毁时：
-
-4. 若使用了`@preDestory`注解标注了某个方法，则会执行这个方法。
-
-5. 若实现了`DisposableBean`j接口，则会执行这个接口的`destroy()`方法。
 
 
 
@@ -30,7 +31,7 @@
 java -jar xyz.jar --debug
 ```
 
-## 2.Bean的懒加载
+### 2.Bean的懒加载
 
 spring应用会在启动时就创建bean，若要开启懒加载，可以在application.properties中添加如下配置：
 
@@ -40,11 +41,11 @@ spring.main.lazy-initialization=true
 
 应用的bean会根据需要来配置创建。但是可能会导致应用发生问题，**通常不建议开启**。此外`@Lazy`注解可以作用于某个bean上，用于配置该bean的懒加载模式。
 
-## 3. 定制化SpringBoot启动的Banner
+### 3. 定制化SpringBoot启动的Banner
 
 项目的resources目录下创建banner.txt文件，然后将任意文本内容复制进去，会替换默认的banner，启动时即可看到输出。
 
-## 4.定制化SpringBoot应用
+### 4.定制化SpringBoot应用
 
 通常我们都是通过`SpringApplication.run(...)`方法来启动应用，这是一个静态方法。然而，我们也可以通过实例化一个`SpringApplicaton`的实例来运行一个SpringBoot应用，并进行定制化的配置，如：
 
@@ -62,7 +63,7 @@ public class Application {
 }
 ```
 
-## 5. 流式创建者模式API
+### 5. 流式创建者模式API
 
 采用`SpringApplicationBuilder`的流式API可以更方便的创建具有上下文关系的SpringApplication实例，这里有待了解，简单的实例如下。
 
@@ -97,11 +98,11 @@ public class Application {
 
 具体的章节请参考官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-application-availability
 
-## 7. 应用的事件和监听器
+### 7. 应用的事件和监听器
 
 具体的章节请参考官方文档：https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-web-environment
 
-## 8. Web应用的环境
+### 8. Web应用的环境
 
 SpringApplicaton会基于当前应用的依赖，来创建对应的`ApplicationConext`：
 
@@ -158,5 +159,5 @@ pom.xml:
 
 ![image-20210202153349557](C:\Users\Yegenyao\AppData\Roaming\Typora\typora-user-images\image-20210202153349557.png)
 
-## 9. 访问应用的参数
+### 9. 访问应用的参数
 
