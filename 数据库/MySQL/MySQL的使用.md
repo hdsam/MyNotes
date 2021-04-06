@@ -184,19 +184,46 @@ alter table tb drop index dept_index;
 
 下面来解释下explain命令中各个字段的说明：
 
-`id`：执行命令，id越大，则越先执行；id相同，则在上面的先执行。
+1. `id`：执行命令的序号。id越大，则越先执行；id相同，则在上面的先执行。
 
-`select_type`：查询的类型,主要有以下几种：
+2. `select_type`：查询的类型,主要有以下几种：
 
-- SIMPLE: 简单查询
+- SIMPLE: 简单查询，不包含子查询和union
 
-- PRIMARY : 主查询， 包含子查询的主查询
-- SUBQUERY: 子查询。
-- DERIVED: 衍生查询（使用到了临时表）
+- PRIMARY : 主查询，复杂查询最外层的select部分。
+- SUBQUERY: 子查询。包含在select中的子查询（不在from子句中）。
+- DERIVED: 衍生查询。在from子句后，查询的结果放到了临时表，通常这么分类：
   - 在from 后面查的是一个子查询t1， 则这个子查询t1就是一个衍生表
   - 在from子句中，如果t1 union t2， 则t1则是衍生表。
 - UNION RESULT : 表明哪些表存在union
 
-`table`: 表示查询的表名
+3. `table`: 表示查询的表名
 
-`type`:索引类型
+4. `type`:索引类型，按查询效率从高到底排序为：
+
+```mys
+system > const > eq_ref > ref > range > index > all
+```
+
+`system`:表中的数据只有一行
+
+`const`:通常是通过主键或唯一键索引来查询,优化为常量查询。
+
+```
+select 1 from dual;
+```
+
+`eq_ref`: 连接查询中，通过外键关联到另一张表，这张表的查询就是eq_ref。
+
+`ref`:通过非主键索引来查询，或用到了唯一索引的前缀部分。
+
+`range`:范围扫描，通常出现在in、between、 > , < , >=等操作中，使用一个索引来检索给定范围的行。
+
+`index`: 扫描全部索引就能拿到结果，相对于主键索引，二级索引通常比较小。
+
+`all`:全表扫描
+
+5. `possilbe_keys`:列出所有可用的索引
+6. `key`:实际用的索引
+7. `key_len`:使用到的索引的长度，及使用到的索引的字节数。
+
